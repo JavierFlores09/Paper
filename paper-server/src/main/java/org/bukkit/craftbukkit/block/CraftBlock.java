@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
+import io.papermc.paper.world.attribute.EnvironmentalAttributeType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -699,5 +700,11 @@ public class CraftBlock implements Block {
     public void randomTick() {
         final ServerLevel level = this.level.getMinecraftWorld();
         this.getBlockState().randomTick(level, this.position, level.getRandom());
+    }
+    // Paper end
+
+    @Override
+    public <T> T getAttributeValue(final EnvironmentalAttributeType<T> type) {
+        return this.getCraftWorld().getEnvironmentalAttribute(type).getPositioned(this.position);
     }
 }
