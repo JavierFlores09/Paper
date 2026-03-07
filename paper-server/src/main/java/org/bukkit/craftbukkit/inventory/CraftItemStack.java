@@ -8,6 +8,7 @@ import io.papermc.paper.inventory.tooltip.TooltipContext;
 import io.papermc.paper.persistence.PaperPersistentDataContainerView;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import io.papermc.paper.util.MCUtil;
+import io.papermc.paper.util.converter.CodecConverter;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
@@ -704,8 +705,14 @@ public final class CraftItemStack extends ItemStack {
         this.setDataInternal((PaperDataComponentType.NonValuedImpl<?, ?>) type, null);
     }
 
-    private <A, V> void setDataInternal(final PaperDataComponentType<A, V> type, final A value) {
-        this.handle.set(type.getHandle(), type.getAdapter().toVanilla(value, type.getHolder()));
+    private <A, V> void setDataInternal(final PaperDataComponentType<A, V> type, final @Nullable A value) {
+        final V v = type.getConverter().toVanilla(value);
+        if (type.getConverter() instanceof CodecConverter<V, A> codecConverter) {
+            codecConverter.validate(v, true).ifPresent(message -> {
+                throw new IllegalArgumentException("Failed to encode data component %s (%s)".formatted(type.getKey().asString(), message));
+            });
+        }
+        this.handle.set(type.getHandle(), v);
     }
 
     @Override
