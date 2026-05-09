@@ -162,7 +162,7 @@ public final class CraftItemStack extends ItemStack {
     /**
      * Copies the NMS stack to return as a strictly-Bukkit stack
      */
-    public static ItemStack asBukkitCopy(net.minecraft.world.item.ItemStack original) {
+    private static ItemStack asBukkitCopy(net.minecraft.world.item.ItemStack original) {
         // no such thing as a "strictly-Bukkit stack" anymore
         // we copy the stack since it should be a complete copy not a mirror
         return asCraftMirror(original.copy());
