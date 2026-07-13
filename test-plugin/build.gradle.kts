@@ -4,6 +4,10 @@ dependencies {
     compileOnly(project(":paper-api"))
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
 tasks.processResources {
     val props = mapOf(
         "version" to project.version,

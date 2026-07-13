@@ -267,7 +267,7 @@ fun TaskContainer.registerRunTask(
         // vendor.set(JvmVendorSpec.JETBRAINS)
     })
     //jvmArgs("-XX:+AllowEnhancedClassRedefinition")
-
+    jvmArgs("--enable-preview")
     if (rootProject.childProjects["test-plugin"] != null) {
         val testPluginJar = rootProject.project(":test-plugin").tasks.jar.flatMap { it.archiveFile }
         inputs.file(testPluginJar)

@@ -1,6 +1,8 @@
 package io.papermc.paper.plugin.manager;
 
 import com.google.common.graph.MutableGraph;
+import io.papermc.paper.event.debug.EventDebugHook;
+import io.papermc.paper.event.debug.EventDebugHooks;
 import io.papermc.paper.plugin.PermissionManager;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import io.papermc.paper.plugin.provider.entrypoint.DependencyContext;
@@ -28,21 +30,26 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-public class PaperPluginManagerImpl implements PluginManager, DependencyContext {
+public class PaperPluginManagerImpl implements PluginManager, DependencyContext, EventDebugHooks.HookHandler {
 
     final PaperPluginInstanceManager instanceManager;
-    final PaperEventManager paperEventManager;
+    final DelegatingEventManager paperEventManager;
     PermissionManager permissionManager;
 
     public PaperPluginManagerImpl(Server server, CommandMap commandMap, @Nullable SimplePluginManager permissionManager) {
         this.instanceManager = new PaperPluginInstanceManager(this, commandMap, server);
-        this.paperEventManager = new PaperEventManager(server);
+        this.paperEventManager = new DelegatingEventManager(server, new PaperEventManager(server));
 
         if (permissionManager == null) {
             this.permissionManager = new NormalPaperPermissionManager();
         } else {
             this.permissionManager = new StupidSPMPermissionManagerWrapper(permissionManager); // TODO: See comment when SimplePermissionManager is removed
         }
+    }
+
+    @Override
+    public void update(final @Nullable EventDebugHook hook) {
+        this.paperEventManager.updateDebugHook(hook);
     }
 
     // REMOVE THIS WHEN SimplePluginManager is removed.
