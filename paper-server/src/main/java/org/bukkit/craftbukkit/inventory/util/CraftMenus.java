@@ -3,10 +3,8 @@ package org.bukkit.craftbukkit.inventory.util;
 import java.util.function.Supplier;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.item.trading.Merchant;
-import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity;
@@ -21,6 +19,7 @@ import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.entity.SmokerBlockEntity;
 import org.bukkit.craftbukkit.inventory.CraftMenuType;
 import org.bukkit.craftbukkit.inventory.CraftMerchant;
+import org.bukkit.craftbukkit.inventory.view.CraftMerchantView;
 import org.bukkit.craftbukkit.inventory.view.builder.CraftAccessLocationInventoryViewBuilder;
 import org.bukkit.craftbukkit.inventory.view.builder.CraftBlockEntityInventoryViewBuilder;
 import org.bukkit.craftbukkit.inventory.view.builder.CraftDoubleChestInventoryViewBuilder;
@@ -50,11 +49,8 @@ public final class CraftMenus {
 
     // This is a temporary measure that will likely be removed with the rewrite of HumanEntity#open[] methods
     public static void openMerchantMenu(final ServerPlayer player, final MerchantMenu merchant) {
-        final Merchant minecraftMerchant = ((CraftMerchant) merchant.getBukkitView().getMerchant()).getMerchant();
-        int level = 1;
-        if (minecraftMerchant instanceof final Villager villager) {
-            level = villager.getVillagerData().level();
-        }
+        final CraftMerchantView view = merchant.getBukkitView();
+        final Merchant minecraftMerchant = ((CraftMerchant) view.getMerchant()).getMerchant();
 
         if (minecraftMerchant.getTradingPlayer() != null) { // merchant's can only have one trader
             minecraftMerchant.getTradingPlayer().closeContainer();
@@ -66,12 +62,7 @@ public final class CraftMenus {
         player.containerMenu = merchant;
         player.initMenu(merchant);
 
-        // Copy Merchant#openTradingScreen
-        MerchantOffers offers = minecraftMerchant.getOffers();
-        if (!offers.isEmpty()) {
-            player.sendMerchantOffers(merchant.containerId, offers, level, minecraftMerchant.getVillagerXp(), minecraftMerchant.showProgressBar(), minecraftMerchant.canRestock());
-        }
-        // End Copy Merchant#openTradingScreen
+        view.sendMerchantOffers();
     }
 
     public static <V extends InventoryView, B extends InventoryViewBuilder<V>> MenuTypeData<V, B> getMenuTypeData(final CraftMenuType<?, ?> menuType) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/MerchantResultSlot.java
 +++ b/net/minecraft/world/inventory/MerchantResultSlot.java
-@@ -47,13 +_,34 @@
+@@ -47,13 +_,33 @@
  
      @Override
      public void onTake(final Player player, final ItemStack carried) {
@@ -19,8 +19,7 @@
 +                if (!event.callEvent()) {
 +                    carried.setCount(0);
 +                    player.containerMenu.sendAllDataToRemote();
-+                    int level = merchant instanceof net.minecraft.world.entity.npc.villager.Villager villager ? villager.getVillagerData().level() : 1;
-+                    serverPlayer.sendMerchantOffers(player.containerMenu.containerId, merchant.getOffers(), level, merchant.getVillagerXp(), merchant.showProgressBar(), merchant.canRestock());
++                    ((org.bukkit.craftbukkit.inventory.view.CraftMerchantView) player.containerMenu.getBukkitView()).sendMerchantOffers();
 +                    return;
 +                }
 +                offer = org.bukkit.craftbukkit.inventory.CraftMerchantRecipe.fromBukkit(event.getTrade()).toMinecraft();
@@ -37,3 +36,8 @@
                  player.awardStat(Stats.TRADED_WITH_VILLAGER);
                  this.slots.setItem(0, buyA);
                  this.slots.setItem(1, buyB);
+@@ -62,3 +_,4 @@
+             this.merchant.overrideXp(this.merchant.getVillagerXp() + offer.getXp());
++            ((org.bukkit.craftbukkit.inventory.view.CraftMerchantView) player.containerMenu.getBukkitView()).increaseMerchantExperience(offer.getXp()); // Paper - merchant experience bar API
+         }
+     }
