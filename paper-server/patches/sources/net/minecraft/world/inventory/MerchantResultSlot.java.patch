@@ -36,8 +36,3 @@
                  player.awardStat(Stats.TRADED_WITH_VILLAGER);
                  this.slots.setItem(0, buyA);
                  this.slots.setItem(1, buyB);
-@@ -62,3 +_,4 @@
-             this.merchant.overrideXp(this.merchant.getVillagerXp() + offer.getXp());
-+            ((org.bukkit.craftbukkit.inventory.view.CraftMerchantView) player.containerMenu.getBukkitView()).increaseMerchantExperience(offer.getXp()); // Paper - merchant experience bar API
-         }
-     }

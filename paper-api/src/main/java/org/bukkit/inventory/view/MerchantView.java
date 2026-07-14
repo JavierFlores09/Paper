@@ -24,7 +24,6 @@ public interface MerchantView extends InventoryView {
     @NotNull
     Merchant getMerchant();
 
-    // Paper start - merchant experience bar API
     /**
      * Gets the level displayed in this merchant view.
      *
@@ -70,9 +69,7 @@ public interface MerchantView extends InventoryView {
      * @param visible whether the experience bar is visible
      */
     void setMerchantExperienceBarVisible(boolean visible);
-    // Paper end - merchant experience bar API
 
-    // Paper start - merchant restock API
     /**
      * Gets whether this merchant view indicates that its offers can be
      * restocked.
@@ -94,5 +91,4 @@ public interface MerchantView extends InventoryView {
      * @param canRestock whether the merchant is shown as able to restock
      */
     void setRestock(boolean canRestock);
-    // Paper end - merchant restock API
 }
