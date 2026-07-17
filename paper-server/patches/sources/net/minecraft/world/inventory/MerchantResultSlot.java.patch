@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/MerchantResultSlot.java
 +++ b/net/minecraft/world/inventory/MerchantResultSlot.java
-@@ -47,13 +_,34 @@
+@@ -47,13 +_,33 @@
  
      @Override
      public void onTake(final Player player, final ItemStack carried) {
@@ -19,8 +19,7 @@
 +                if (!event.callEvent()) {
 +                    carried.setCount(0);
 +                    player.containerMenu.sendAllDataToRemote();
-+                    int level = merchant instanceof net.minecraft.world.entity.npc.villager.Villager villager ? villager.getVillagerData().level() : 1;
-+                    serverPlayer.sendMerchantOffers(player.containerMenu.containerId, merchant.getOffers(), level, merchant.getVillagerXp(), merchant.showProgressBar(), merchant.canRestock());
++                    ((org.bukkit.craftbukkit.inventory.view.CraftMerchantView) player.containerMenu.getBukkitView()).sendMerchantOffers();
 +                    return;
 +                }
 +                offer = org.bukkit.craftbukkit.inventory.CraftMerchantRecipe.fromBukkit(event.getTrade()).toMinecraft();

@@ -44,6 +44,7 @@ public class CraftMerchantCustom implements CraftMerchant {
         private final Component title;
         private final MerchantOffers trades = new MerchantOffers();
         private Player tradingPlayer;
+        private int experience;
         protected CraftMerchant craftMerchant;
 
         @Deprecated // Paper - Adventure
@@ -113,11 +114,12 @@ public class CraftMerchantCustom implements CraftMerchant {
 
         @Override
         public int getVillagerXp() {
-            return 0; // xp
+            return this.experience;
         }
 
         @Override
         public void overrideXp(int experience) {
+            this.experience = experience;
         }
 
         @Override
