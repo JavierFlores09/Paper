@@ -5,7 +5,6 @@ import io.papermc.paper.world.saveddata.PaperLevelOverrides;
 import io.papermc.paper.world.saveddata.PaperWorldMetadata;
 import io.papermc.paper.world.saveddata.PaperWorldPDC;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Locale;
 import java.util.UUID;
 import net.minecraft.core.Registry;
@@ -169,7 +168,7 @@ public record PaperWorldLoader(MinecraftServer server, String levelId) {
     private boolean hasDimensionData(final LevelStem stem) {
         final ResourceKey<LevelStem> stemKey = this.server.registryAccess().lookupOrThrow(Registries.LEVEL_STEM).getResourceKey(stem).orElseThrow();
         final ResourceKey<Level> dimensionKey = Registries.levelStemToLevel(stemKey);
-        return Files.isDirectory(this.server.storageSource.getDimensionPath(dimensionKey));
+        return WorldFolderMigration.hasGeneratedWorldData(this.server.storageSource, dimensionKey);
     }
 
     public static WorldGenSettings loadWorldGenSettings(

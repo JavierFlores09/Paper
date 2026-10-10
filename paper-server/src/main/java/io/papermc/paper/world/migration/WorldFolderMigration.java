@@ -99,6 +99,10 @@ public final class WorldFolderMigration {
         if (hasCurrentPaperData(context.rootAccess(), context.dimensionKey())) {
             return MigrationMode.NO_OP;
         }
+        // a dimension folder that only carries configuration, so nothing to migrate
+        if (Files.isDirectory(context.targetDimensionPath()) && !hasGeneratedWorldData(context.rootAccess(), context.dimensionKey())) {
+            return MigrationMode.NO_OP;
+        }
         // the dimension was deleted
         if (!Files.isDirectory(context.rootAccess().getDimensionPath(context.dimensionKey()))) {
             try {
@@ -121,5 +125,18 @@ public final class WorldFolderMigration {
         return Files.isRegularFile(WorldMigrationSupport.savedDataPath(targetDataRoot, PaperWorldMetadata.TYPE))
             && Files.isRegularFile(WorldMigrationSupport.savedDataPath(targetDataRoot, PaperLevelOverrides.TYPE))
             && Files.isRegularFile(WorldMigrationSupport.savedDataPath(targetDataRoot, WorldGenSettings.TYPE));
+    }
+
+    public static boolean hasGeneratedWorldData(final LevelStorageSource.LevelStorageAccess rootAccess, final ResourceKey<Level> dimensionKey) {
+        final Path dimensionPath = rootAccess.getDimensionPath(dimensionKey);
+        if (Files.isRegularFile(WorldMigrationSupport.savedDataPath(dimensionPath.resolve(LevelResource.DATA.id()), WorldGenSettings.TYPE))) {
+            return true;
+        }
+        for (final String directory : WorldMigrationSupport.DIMENSION_DIRECTORIES) {
+            if (Files.isDirectory(dimensionPath.resolve(directory))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
